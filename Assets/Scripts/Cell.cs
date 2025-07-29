@@ -1,15 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Cell : MonoBehaviour
 {
+    [SerializeField] GameObject _main;
     [SerializeField] SpriteRenderer _cell;
     [SerializeField] SpriteRenderer _icon;
     [SerializeField] Sprite _unSelect, _select;
+    public int ID;
 
     public int Row { get; }
     public int Col { get; }
+
+    public event Action<Cell> OnCellClickEvent;
 
     private void OnEnable()
     {
@@ -19,6 +24,11 @@ public class Cell : MonoBehaviour
     public void Init()
     {
         UnSelect();
+    }
+
+    private void OnMouseDown()
+    {
+        OnCellClickEvent?.Invoke(this);
     }
 
     public void OnSelected()
@@ -51,8 +61,11 @@ public class Cell : MonoBehaviour
 
     public void SetPos(Vector2 newPos) => transform.position = newPos;
 
-    public void Show(bool isShow)
+    public void ShowUI(bool isShow)
     {
-        gameObject.SetActive(isShow);
+        _main.SetActive(isShow);
     }
+
+    
 }
+
