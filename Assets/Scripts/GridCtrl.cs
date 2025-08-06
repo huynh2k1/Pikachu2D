@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GridCtrl : MonoBehaviour
 {
@@ -17,7 +18,6 @@ public class GridCtrl : MonoBehaviour
     [Header("Preference Variable")]
     [SerializeField] IconSO dataIcon;
     public Cell CellPrefab;
-
 
     private void Start()
     {
@@ -134,5 +134,147 @@ public class GridCtrl : MonoBehaviour
             cell2.UnSelect();
             cell2 = null;
         }
+    }
+
+
+    //Check Can Connect
+    void CheckTwoPoint(Cell cell1, Cell cell2)
+    {
+        if(cell1.Row == cell2.Row)
+        {
+            if(CheckRowX(cell1.Col, cell2.Col, cell1.Row))
+            {
+                Debug.Log($"Cùng hàng có đường đi: {cell1.Row}");
+            }
+        }
+
+        if(cell1.Col == cell2.Col)
+        {
+
+        }
+    }
+
+    //Kiểm tra giữa 2 ô trên cùng một hàng có đường đi hay không
+    public bool CheckRowX(int colStart, int colEnd, int rowCheck)
+    {
+        int startCol = colStart;
+        int endCol = colEnd;
+
+        if(startCol > endCol)
+        {
+            startCol = colEnd;
+            endCol = rowCheck;
+        }
+
+        //int startCol = Mathf.Min(cell1.Col, cell2.Col);
+        //int endCol = Mathf.Max(cell1.Col, cell2.Col);
+
+        for (int i = startCol + 1; i <= endCol; i++)
+        {
+            if (grid[rowCheck, i].ID == -1 && grid[rowCheck, i].ID != cell2.ID)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    //Kiểm tra giữa 2 ô trên cùng một cột có đường đi hay không
+    public bool CheckColY(int rowStart, int rowEnd, int colCheck)
+    {
+        int startRow = rowStart;
+        int endRow = rowEnd;
+
+        if(startRow > endRow)
+        {
+            startRow = rowEnd;
+            endRow = rowStart;
+        }
+        //int startRow = Mathf.Min(cell1.Row, cell2.Row);
+        //int endRow = Mathf.Max(cell1.Row, cell2.Row);
+
+        for (int i = startRow + 1; i <= endRow; i++)
+        {
+            if (grid[i, colCheck].ID == -1 && grid[i, colCheck].ID != cell2.ID)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //Kiểm tra hình chữ nhật trong phạm vi của 2 ô có đường đi hay không
+    public int CheckRectX(Cell cell1, Cell cell2)
+    {
+        Cell cMin = cell1;
+        Cell cMax = cell2;
+
+        if(cMin.Col > cMax.Col)
+        {
+            cMin = cell2;
+            cMax = cell1;
+        }
+
+        for (int c = cMin.Col + 1; c < cMax.Col; c++)
+        {
+            if (CheckRowX(cMin.Col, c, cMin.Row)
+            && CheckColY(cMin.Row, cMax.Row, c)
+            && CheckRowX(c, cMax.Col, cMax.Row))
+            {
+                Debug.Log($"Grid Log: Hàng Cần Tìm {c}");
+                return c;
+            }
+        }
+
+        return -1;
+    }
+
+    public int CheckRectY(Cell cell1, Cell cell2)
+    {
+        Cell cMin = cell1;
+        Cell cMax = cell2;
+
+        if(cMin.Row > cMax.Row)
+        {
+            cMin = cell2;
+            cMax = cell1;
+        }
+
+        for(int r = cMin.Row + 1; r < cMax.Row; r++)
+        {
+            if(CheckColY(cMin.Row, r, cMax.Row)
+            && CheckRowX(cMin.Col, cMax.Col, r)
+            && CheckColY(r, cMax.Row, cMax.Col))
+            {
+                Debug.Log($"Row cần tìm {r}");
+                return r;
+            }
+        }
+        return -1;
+    }
+
+    //Tìm kiếm mở rộng theo hình chữ nhật ngang
+    public void CheckMoreLineX(Cell cell1, Cell cell2, int type)
+    {
+        Cell cellMinCol = cell1; //ô có chỉ số cột nhỏ nhất
+        Cell cellMaxCol = cell2; // ô có chỉ số cột lớn hơn
+
+        if(cellMinCol.Col > cellMaxCol.Col)
+        {
+            cellMinCol = cell2;
+            cellMaxCol = cell1;
+        }
+
+        int y = cellMaxCol.Col; //Tọa độ cột lớn nhất
+        int row = cellMinCol.Row; //Tọa độ hàng
+
+        if(type == -1)
+        {
+            y = cellMinCol.Col; // Ô có chỉ số cột nhỏ hơn
+            row = cellMaxCol.Row; //Hàng có pMax
+        }
+
+        //Check more
     }
 }
