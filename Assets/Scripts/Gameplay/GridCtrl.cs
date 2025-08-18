@@ -19,7 +19,7 @@ public class GridCtrl : MonoBehaviour
     [SerializeField] IconSO dataIcon;
     public Cell CellPrefab;
 
-    private void Start()
+    public void GameInit()
     {
         SpawnGrid(row, col);
         GenerateDataGrid();
