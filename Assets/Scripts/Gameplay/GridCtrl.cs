@@ -255,7 +255,8 @@ public class GridCtrl : MonoBehaviour
     }
 
     //Tìm kiếm mở rộng theo hình chữ nhật ngang
-    public void CheckMoreLineX(Cell cell1, Cell cell2, int type)
+    // type là hướng kiểm tra, 1 : đi về phải, -1 : đi về trái
+    public int CheckMoreLineX(Cell cell1, Cell cell2, int type)
     {
         Cell cellMinCol = cell1; //ô có chỉ số cột nhỏ nhất
         Cell cellMaxCol = cell2; // ô có chỉ số cột lớn hơn
@@ -266,9 +267,11 @@ public class GridCtrl : MonoBehaviour
             cellMaxCol = cell1;
         }
 
+        // TH duyệt về bên phải thì cột bắt đầu duyệt sẽ là cột của ô có chỉ số cột lớn hơn
         int y = cellMaxCol.Col; //Tọa độ cột lớn nhất
         int row = cellMinCol.Row; //Tọa độ hàng
 
+        // TH duyệt về bên trái
         if(type == -1)
         {
             y = cellMinCol.Col; // Ô có chỉ số cột nhỏ hơn
@@ -276,5 +279,26 @@ public class GridCtrl : MonoBehaviour
         }
 
         //Check more
+        if(CheckRowX(cellMinCol.Col, cellMaxCol.Col, row))
+        {
+            while (grid[cellMinCol.Row, y].ID == -1
+                && grid[cellMaxCol.Row, y].ID != -1)
+            {
+                if(CheckColY(cellMinCol.Row, cellMaxCol.Row, y))
+                {
+                    return y;
+                }
+                y += type;
+            }
+        }
+        return -1;
+    }
+
+    public int CheckMoreLineY(Cell cell1, Cell cell2, int type)
+    {
+        Cell cellMinRow = cell1;
+        Cell cellMaxRow = cell2;
+
+        return -1;
     }
 }
