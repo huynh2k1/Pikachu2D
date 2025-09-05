@@ -299,6 +299,20 @@ public class GridCtrl : MonoBehaviour
         Cell cellMinRow = cell1;
         Cell cellMaxRow = cell2;
 
+        if(cellMinRow.Row > cellMaxRow.Row)
+        {
+            cellMinRow = cell2;
+            cellMaxRow = cell1;
+        }
+
+        int x = cellMaxRow.Row; //Tọa độ hàng lớn nhất
+        int col = cellMinRow.Col;
+        if(type == -1)
+        {
+            x = cellMinRow.Row;
+            col = cellMaxRow.Col;
+        }
+
         return -1;
     }
 }
